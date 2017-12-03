@@ -1,0 +1,53 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.2.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
+		
+<tx:annotation-driven proxy-target-class="true"
+		transaction-manager="transactionManager" />	
+		
+<mvc:annotation-driven></mvc:annotation-driven>
+	
+<context:component-scan base-package="org.shopping.task.pos"/>
+
+
+		
+<bean id="viewResolver" class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+<property name="prefix" value="/"/>
+<property name="suffix" value=".jsp"/>
+</bean>
+
+<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource">
+<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+<property name="url" value="jdbc:mysql://localhost:3306/Pos" />
+<property name="username" value="root" />
+<property name="password" value="root" />
+</bean>
+
+
+<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+<property name="dataSource" ref="dataSource"/>
+<property name="configLocation">
+<value>classpath:hibernate.cfg.xml</value>
+</property>
+</bean>
+
+<bean id="userDao" class="org.shopping.task.pos.dao.ProductRepositoryImpl">
+    <constructor-arg>
+        <ref bean="sessionFactory" />
+    </constructor-arg>
+</bean>
+
+
+<bean id="transactionManager"
+		class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource" />
+	</bean>
+
+</beans>
